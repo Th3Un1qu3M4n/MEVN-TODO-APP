@@ -1,0 +1,46 @@
+version: '3.7'
+
+services:
+  server:
+    image: th3un1qu3m4n/todo-backend
+    container_name: node-server
+    command: npm start
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+    environment:
+      - NODE_ENV=development
+    networks:
+      - app-network
+  mongo:
+    image: mongo
+    container_name: mongo
+    volumes:
+      - data-volume:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - app-network
+  client:
+    image: th3un1qu3m4n/vue-app
+    container_name: vue-app
+    command: npm start
+    depends_on:
+      - server
+    environment:
+      - VUE_APP_BACKEND_URL=http://localhost:3000
+    ports:
+      - "8081:8080"
+    networks:
+      - app-network
+
+networks:
+    app-network:
+        driver: bridge
+
+volumes:
+    data-volume:
+    node_modules:
+    web-root:
+      driver: local
