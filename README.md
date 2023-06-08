@@ -71,6 +71,9 @@ To run unit tests for the server, follow these steps:
 
    This command will execute the unit tests and display the results in the console.
    Also ensure to change the mongodb url in the server.js to point to your instance of mongodb available
+   
+   ![image](https://github.com/Th3Un1qu3M4n/MEVN-TODO-APP/assets/57266167/ae0bbba9-2c0f-44e1-8db9-d39e27ad27fc)
+
 
 ### Project Structure
 
