@@ -3,9 +3,14 @@ const mongoose = require('mongoose');
 const todoRouter = require('./controller/todo.controller');
 const cors = require('cors');
 
-var app = express();
+const app = express();
 
-var port = process.env.PORT || 3000;
+const port = process.env.PORT || 3000;
+
+console.log("process.env", process.env)
+
+// "mongodb://mongo:27017/todo"
+const dbUrl = process.env.MongoUrl || "mongodb://127.0.0.1:27017/todo"
 
 
 app.use(cors({origin: "*"}));
@@ -17,7 +22,7 @@ app.use(todoRouter)
 const start = async () => {
 try {
     console.log("Starting server ...")
-    await mongoose.connect("mongodb://mongo:27017/todo", {
+    await mongoose.connect(dbUrl, {
     useNewUrlParser: true
     });
     console.log("Connected to the database todo")
