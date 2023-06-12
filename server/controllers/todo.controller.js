@@ -1,8 +1,7 @@
 const Todo = require('../schemas/todo.schema');
-const todoRouter = require("express").Router();
 
-//route to get all the tasks
-todoRouter.get("/todo", async (req, res)=>{
+
+const getTodo = async (req, res)=>{
     try{
         const todoList = await Todo.find().sort({creation_time: -1});
         console.log("Retreving TodoList ",todoList.length)
@@ -13,10 +12,10 @@ todoRouter.get("/todo", async (req, res)=>{
         res.json({error: err});
     }
         
-});
+};
 
-//route to add a new task
-todoRouter.post("/todo", async (req, res)=>{
+
+const createTodo =  async (req, res)=>{
     try{
 
         const newTask = new Todo({
@@ -33,9 +32,10 @@ todoRouter.post("/todo", async (req, res)=>{
         res.json({error: err});
     }
     
-});
+};
 
-todoRouter.post("/todo/complete/:id", async (req, res)=>{
+
+const completeTodo = async (req, res)=>{
     try{
         const taskId = req.params.id;
 
@@ -51,10 +51,10 @@ todoRouter.post("/todo/complete/:id", async (req, res)=>{
         res.json({error: err});
     }
     
-});
+};
 
-//route for deleting a task
-todoRouter.delete("/todo/:id", async (req, res)=>{
+
+const deleteTodo =  async (req, res)=>{
     try{
         const taskId = req.params.id; 
 
@@ -68,10 +68,10 @@ todoRouter.delete("/todo/:id", async (req, res)=>{
         console.log(err);
         res.json({error: err});
     }
-});
+};
 
-//route for deleting all the tasks
-todoRouter.delete("/todo", async (req, res)=>{
+
+const deletAllTodo = async (req, res)=>{
     try{        
         const deletedTodos = await Todo.deleteMany()
         console.log(deletedTodos);
@@ -82,6 +82,12 @@ todoRouter.delete("/todo", async (req, res)=>{
         console.log(err);
         res.json({error: err});
     }
-});
+};
 
-module.exports = todoRouter;
+module.exports = {
+    getTodo,
+    createTodo,
+    completeTodo,
+    deleteTodo,
+    deletAllTodo
+}
