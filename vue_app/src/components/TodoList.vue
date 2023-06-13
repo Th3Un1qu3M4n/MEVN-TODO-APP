@@ -6,20 +6,15 @@
       <ChevronDownIcon class="icon-2x form-icon" @click="handleSubmit"/>
     </Form>
     <transition-group name="todoList" class="todoListContainer"  tag="div">
-      <div v-for="(item) in listItems" v-bind:key="item._id" class="task-card">
-        
-        <CheckCircle v-if="item.is_completed" class="form-icon checkedIcon"/>
-        <CircleOutline v-else class="form-icon" v-on:click="completeTodo(item._id)"/>
-      
-        <div class="content">
-          <h2>{{item.content}}</h2>
-          <div class="timestamps">
-            <small v-if="item.is_completed">Completed: {{ (new Date(item.completed_time)).toLocaleString() }}</small>
-            <small v-else>Created: {{ (new Date(item.creation_time)).toLocaleString() }}</small>
+      <div v-if="loading"  class="task-card">
+        <p>Loading ...</p>
+      </div>
 
-          </div>
-        </div>
-        <Delete class="icon-2x form-icon" v-on:click="deleteTodo(item._id)"/>
+      <div v-if="!loading && listItems.length < 1" class="task-card">
+        <p>No todos available</p>
+      </div>
+      <div v-for="(itemObj) in listItems" v-bind:key="itemObj._id" class="task-card">
+        <TodoItem :item="itemObj" v-on:deleteTodoItem="deleteTodo" v-on:completeTodoItem="completeTodo"/>
       </div>
     </transition-group>
   </div>
@@ -29,9 +24,7 @@
 <script>
 import MenuIcon from 'vue-material-design-icons/Menu.vue';
 import ChevronDownIcon from 'vue-material-design-icons/ChevronDown.vue';
-import CircleOutline from 'vue-material-design-icons/CircleOutline.vue';
-import CheckCircle from 'vue-material-design-icons/CheckCircle.vue';
-import Delete from 'vue-material-design-icons/Delete.vue';
+import TodoItem from '@/components/TodoItem.vue'
 import {createTodo, getTodos, deleteTodoById, completeTodoById} from '@/api/todo.api';
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
@@ -41,14 +34,13 @@ export default {
   components: {
     MenuIcon,
     ChevronDownIcon,
-    CircleOutline,
-    CheckCircle,
-    Delete,
+    TodoItem,
   },
   data() {
       return {
         listItems: [],
         todoText: "",
+        loading: true,
       }
     },
     methods: {
@@ -69,9 +61,7 @@ export default {
         try {
           const finalRes = await getTodos();
           this.listItems = finalRes.todoList;
-          toast("All Todos Loaded", {
-            autoClose: 500,
-          });
+          this.loading = false;
           
         } catch (error) {
           console.log("request failed")
@@ -202,6 +192,20 @@ input:focus {
     font-weight: bold;
     font-size: 20px;
 }
+.TodoInnerContainer{
+  /* width: 100%; */
+  padding: 15px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  color: #606060;
+  background-color: #ffffff;
+  font-weight: 300;
+  font-size: 20px;
+  text-align: center;
+  border-radius: 30px;
+}
 
 
 .todoList-enter-active, .todoList-leave-active {
@@ -229,36 +233,6 @@ input:focus {
   /* background-color: red; */
 }
 
-
-.task-card .content{
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  font-weight: 500;
-  justify-content: start;
-  align-items: center;
-  text-align: left;
-  /* background-color: red; */
-}
-.task-card h2{
-  width: 100%;
-  text-align: left;
-  font-weight: 500;
-  /* background-color: red; */
-}
-.task-card .timestamps{
-  padding-top: 10px;
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  font-weight: 100;
-  justify-content: space-between;
-  align-items: center;
-  text-align: left;
-  font-size: 14px;
-  /* background-color: red; */
-}
 .task-card:first-of-type{
   border-top-right-radius: 10px;
   border-top-left-radius: 10px;

@@ -6,6 +6,7 @@
     </div>
   </div>
   <TodoList />
+  
 
 </template>
 
@@ -17,7 +18,9 @@ import TodoList from "@/components/TodoList.vue"
 export default {
   name: 'Todo-App',
   components: {
-    TodoList
+    TodoList,
+    // HelloUser
+
   },
     
 }
